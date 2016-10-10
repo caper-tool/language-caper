@@ -1,0 +1,404 @@
+'scopeName': 'source.caper'
+'name': 'Caper'
+'fileTypes': [
+  't'
+]
+'patterns': [
+  {
+    'include': '#comments'
+  }
+  {
+    'include': '#numbers'
+  }
+  {
+    'comment': 'keywords that delimit flow conditionals'
+    'match': '\\b(if|else)\\b'
+    'name': 'keyword.control.conditional.caper'
+  }
+  {
+    'comment': 'keywords that delimit loops'
+    'match': '\\b(do|while)\\b'
+    'name': 'keyword.control.repeat.caper'
+  }
+  {
+    'comment': 'keywords that alter flow from within a block'
+    'match': '\\b(return)\\b'
+    'name': 'keyword.control.statement.caper'
+  }
+  {
+    'comment': 'keyword operators that evaluate to true or false'
+    'match': '\\b(and|not|or)\\b'
+    'name': 'keyword.operator.logical.caper'
+  }
+  {
+    'match': '&\\*&|\\|->|@|\\\\/'
+    'name': 'keyword.operator.assertion.caper'
+  }
+  {
+    'match': '<\\=|>\\=|\\=|<|>|\\!\\='
+    'name': 'keyword.operator.comparison.caper'
+  }
+  {
+    'match': '\\+|\\-|\\*|/'
+    'name': 'keyword.operator.arithmetic.caper'
+  }
+  {
+    'match': ':\\='
+    'name': 'keyword.operator.assignment.caper'
+  }
+  {
+    'match': '\\b(true|false|0p|1p)\\b'
+    'name': 'constant.language.caper'
+  }
+  {
+    'begin': '(?=\\b(function)\\b(?!\\s*:))'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.section.function.begin.caper'
+    'end': '(?<=})'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.section.function.end.caper'
+    'patterns': [
+      {
+        'include': '#comments'
+      }
+      {
+        'include': '#function_body'
+      }
+      {
+        'include': '#assertions'
+      }
+      {
+        'begin': '\\G'
+        'end': '(?<=\\))'
+        'name': 'meta.function.caper'
+        'patterns': [
+          {
+            'include': '#function_innards'
+          }
+        ]
+      }
+    ]
+  }
+  {
+    'begin': '(?=\\b(predicate)\\b(?!\\s*:))'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.section.predicate.begin.caper'
+    'end': ';'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.section.predicate.end.caper'
+    'patterns': [
+      {
+        'include': '#comments'
+      }
+      {
+        'begin': '\\G'
+        'end': '(?<=\\))'
+        'name': 'meta.predicate.caper'
+        'patterns': [
+          {
+            'include': '#predicate_innards'
+          }
+        ]
+      }
+    ]
+  }
+  {
+    'begin': '(?=\\b(region)\\b(?!\\s*:))'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.section.region.begin.caper'
+    'end': '(?<=})'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.section.region.end.caper'
+    'patterns': [
+      {
+        'include': '#comments'
+      }
+      {
+        'include': '#region_body'
+      }
+      {
+        'begin': '\\G'
+        'end': '(?<=\\))'
+        'name': 'meta.region.caper'
+        'patterns': [
+          {
+            'include': '#region_innards'
+          }
+        ]
+      }
+    ]
+  }
+  {
+    'begin': '(?=\\b(assert|ensures|invariant|requires)\\b(?!\\s*:))'
+    'end': '(?<=;)'
+    'patterns': [
+      {
+        'include': '#comments'
+      }
+      {
+        'include': '#assertions'
+      }
+    ]
+  }
+  {
+    'match': '\\b(actions|guards|interpretation)\\b'
+    'captures':
+      '1':
+        'name': 'keyword.other.statement.caper'
+  }
+  {
+    'include': '#block'
+  }
+]
+'repository':
+  'assertions':
+    'patterns': [
+      {
+        'begin': '(assert|ensures|invariant|requires)'
+        'beginCaptures':
+          '1':
+            'name': 'keyword.other.statement.caper'
+        'end': ';'
+        'patterns': [
+          {
+            'include': '$self'
+          }
+        ]
+      }
+    ]
+  'block':
+    'patterns': [
+      {
+        'begin': '\\{'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.section.block.begin.caper'
+        'end': '\\}|(?=\\s*#\\s*endif\\b)'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.section.block.end.caper'
+        'name': 'meta.block.c'
+        'patterns': [
+          {
+            'include': '$self'
+          }
+        ]
+      }
+    ]
+  'comments':
+    'patterns': [
+      {
+        'begin': '/\\*'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.begin.caper'
+        'end': '\\*/'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.end.caper'
+        'name': 'comment.block.caper'
+      }
+      {
+        'begin': '(^[ \\t]+)?(?=//)'
+        'beginCaptures':
+          '1':
+            'name': 'punctuation.whitespace.comment.leading.caper'
+        'end': '(?!\\G)'
+        'patterns': [
+          {
+            'begin': '//'
+            'beginCaptures':
+              '0':
+                'name': 'punctuation.definition.comment.caper'
+            'end': '\\n'
+            'name': 'comment.line.double-slash.caper'
+          }
+        ]
+      }
+    ]
+  'function_body':
+    'patterns': [
+      {
+        'begin': '{'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.function.body.begin.bracket.curly.caper'
+        'end': '}'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.function.body.end.bracket.curly.caper'
+        'patterns': [
+          {
+            'include': '$self'
+          }
+        ]
+      }
+    ]
+  'function_innards':
+    'patterns': [
+      {
+        'match': '\\b(function)\\b(?:\\s*(\\*))?'
+        'captures':
+          '1':
+            'name': 'storage.type.function.caper'
+          '2':
+            'name': 'storage.modifier.generator.caper'
+      }
+      {
+        'match': '[A-Za-z][A-Za-z0-9_]*(?=\\s*\\()'
+        'name': 'entity.name.function.caper'
+      }
+      {
+        'include': '#function_params'
+      }
+      {
+        'include': '#assertions'
+      }
+      {
+        'include': '#comments'
+      }
+    ]
+  'function_params':
+    'patterns': [
+      {
+        'begin': '\\('
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.parameters.begin.bracket.round.caper'
+        'end': '\\)'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.parameters.end.bracket.round.caper'
+        'name': 'meta.parameters.caper'
+        'patterns': [
+          {
+            'match': '[A-Za-z][A-Za-z0-9_]*'
+            'name': 'variable.parameter.function.caper'
+          }
+        ]
+      }
+    ]
+  'numbers':
+    'patterns': [
+      {
+        'name': 'constant.numeric.integer.decimal.caper'
+        'match': '\\b([1-9]+[0-9]*|0)\\b'
+      }
+    ]
+  'parens':
+    'begin': '\\('
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.section.parens.begin.caper'
+    'end': '\\)'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.section.parens.end.caper'
+    'name': 'meta.parens.caper'
+    'patterns': [
+      {
+        'include': '$base'
+      }
+    ]
+  'predicate_innards':
+    'patterns': [
+      {
+        'match': '\\b(predicate)\\b(?:\\s*(\\*))?'
+        'captures':
+          '1':
+            'name': 'storage.type.predicate.caper'
+      }
+      {
+        'match': '[A-Za-z][A-Za-z0-9_]*(?=\\s*\\()'
+        'name': 'entity.name.predicate.caper'
+      }
+      {
+        'include': '#predicate_params'
+      }
+      {
+        'include': '#comments'
+      }
+    ]
+  'predicate_params':
+    'patterns': [
+      {
+        'begin': '\\('
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.parameters.begin.bracket.round.caper'
+        'end': '\\)'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.parameters.end.bracket.round.caper'
+        'name': 'meta.parameters.caper'
+        'patterns': [
+          {
+            'match': '[A-Za-z][A-Za-z0-9_]*'
+            'name': 'variable.parameter.predicate.caper'
+          }
+        ]
+      }
+    ]
+  'region_body':
+    'patterns': [
+      {
+        'begin': '{'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.region.body.begin.bracket.curly.caper'
+        'end': '}'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.region.body.end.bracket.curly.caper'
+        'patterns': [
+          'include': '$self'
+        ]
+      }
+    ]
+  'region_innards':
+    'patterns': [
+      {
+        'match': '\\b(region)\\b(?:\\s*(\\*))?'
+        'captures':
+          '1':
+            'name': 'storage.type.region.caper'
+          '2':
+            'name': 'storage.modifier.generator.caper'
+      }
+      {
+        'match': '[A-Za-z][A-Za-z0-9_]*(?=\\s*\\()'
+        'name': 'entity.name.region.caper'
+      }
+      {
+        'include': '#region_params'
+      }
+      {
+        'include': '#comments'
+      }
+    ]
+  'region_params':
+    'patterns': [
+      {
+        'begin': '\\('
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.parameters.begin.bracket.round.caper'
+        'end': '\\)'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.parameters.end.bracket.round.caper'
+        'name': 'meta.parameters.caper'
+        'patterns': [
+          {
+            'match': '[A-Za-z][A-Za-z0-9_]*'
+            'name': 'variable.parameter.region.caper'
+          }
+        ]
+      }
+    ]
